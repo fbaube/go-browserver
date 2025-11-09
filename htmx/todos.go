@@ -88,8 +88,8 @@ var (
 func RenderTodos(todos []Todo) string {
 	if len(todos) == 0 {
 		todos = []Todo{
-			{ID: 0, Title: "Zero task", Done: false, TimeID: time.Now().UnixMicro()},
-			{ID: 1, Title: "First task", Done: false, TimeID: time.Now().UnixMicro() + 1},
+			{ID: 0, Title: "Zeroth task", Done: false, TimeID: time.Now().UnixMicro()},
+			{ID: 1, Title: "First  task", Done: false, TimeID: time.Now().UnixMicro() + 1},
 			{ID: 2, Title: "Second task", Done: true, TimeID: time.Now().UnixMicro() + 2},
 		}
 		Todos = todos
@@ -114,7 +114,7 @@ func RenderBody(todos []Todo) string {
 func Body(todos []Todo) *elem.Element {
 	bodyContent := elem.Div(
 		attrs.Props{attrs.Style: centerContainerStyle.ToInline()},
-		elem.H1(nil, elem.Text("Yet Another Todo App")),
+		elem.H2(nil, elem.Text("Browserved Todo App")),
 		elem.Form(
 			// attrs.Props{attrs.Method: "post", attrs.Action: "/add"},
 			attrs.Props{

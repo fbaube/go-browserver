@@ -20,8 +20,8 @@ func RenderIndex(w http.ResponseWriter) {
 
 	data := PageData{
 		Todos: []TmplTodo{
-			{ID: 1, Text: "First task", Checked: false},
-			{ID: 2, Text: "Second task", Checked: true},
+			{ID: 1, Text: "My first  task", Checked: false},
+			{ID: 2, Text: "My second task", Checked: true},
 		},
 	}
 	tmpl.ExecuteTemplate(w, "base", data)

@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/elijahmorg/lhmtx/api"
+        "fmt"
+	"github.com/elijahmorg/lhmtx/api" // FIXME
 )
 
 func main() {
+     	fmt.Printf("Running main...")
 	api.EchoStart()
 }

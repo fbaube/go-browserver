@@ -3,12 +3,14 @@
 package api
 
 import (
+        "fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	wasmhttp "github.com/nlepage/go-wasm-http-server"
 )
 
 func EchoStart() {
+     	fmt.Printf("Executing...")
 	// Echo instance
 	e := echo.New()
 
@@ -24,5 +26,7 @@ func EchoStart() {
 
 	// Start server
 	wasmhttp.Serve(e.Server.Handler)
+
+	fmt.Printf("Everything is up and running...")
 	select {}
 }
