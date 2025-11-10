@@ -40,10 +40,35 @@ Unfortunately tinygo can't compile most of the net/http packages
 cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js .
 ```
 
-
 # Todo List App <small>with `elem-go`, `htmx`, `Go labstack/echo`</small>
 
-Based off this [example](https://github.com/chasefleming/elem-go/tree/main/examples/htmx-fiber-todo) but with modifications. I grabbed this example as it looked like it did most of the todo stuff I wanted.
+Based on [this example](https://github.com/chasefleming/elem-go/tree/main/examples/htmx-fiber-todo), with modifications. I grabbed this example
+as it looked like it did most of the todo stuff I wanted.
 
-I did not realize what elem-go was - and so in the future I'll probably swap that out for a template based generation but most of the effort of this was towards doing the local first aspect.
+I did not realize what elem-go was - and so in the future I'll
+probably swap that out for a template based generation but most
+of the effort of this was towards doing the local first aspect.
 
+## **_(Begin: README of original example)_**
+
+### Structure
+
+* `GET /` displays the list of Todo items.
+* `POST /toggle/:id` toggles the Done status of a Todo based on its ID.
+* `POST /add`adds a new Todo to the list.
+
+### HTML Generation
+
+HTML content is programmatically generated using the elem-go library. This includes:
+
+* A form for adding new Todos.
+* A dynamic list that renders each Todo as an `li`
+  element with an input checkbox to toggle completion.
+* Styling for elements is handled inline using the `styles` subpackage.
+* Asynchronous behavior 
+
+Using htmx, the application performs actions like adding a
+new Todo or toggling the completion status without a full
+page reload. This provides a smoother user experience.
+
+### **_(End: README of original example)_**
