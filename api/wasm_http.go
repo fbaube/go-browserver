@@ -4,6 +4,7 @@ package api
 
 import (
         "fmt"
+	"syscall/js"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	wasmhttp "github.com/nlepage/go-wasm-http-server"
@@ -14,7 +15,8 @@ import (
 // type http.Handler and passes that into wasmhttp.Serve() 
 func EchoStart() {
      	fmt.Printf("Running in-browser EchoStart...")
-	e := echo.New()
+	js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
+       	e := echo.New()
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

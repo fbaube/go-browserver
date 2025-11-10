@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
 	// "github.com/elijahmorg/lhtmx/htmx" 
 	"github.com/fbaube/go-browserver/htmx"
 	"github.com/labstack/echo/v4"
@@ -27,6 +26,10 @@ func hRenderTodosRoute(c echo.Context) error {
 }
 
 func hToggleTodoRoute(c echo.Context) error {
+     // fmt.Printf("TOGGLE:" + ctxAsString(c))
+        c.Echo().Logger.Info("TOGGLE:" + ctxAsString(c))
+        println("TOGGLE:" + ctxAsString(c))
+	// js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
 	id, _ := strconv.Atoi(c.Param("id"))
 	var updatedTodo htmx.Todo
 	for i, todo := range htmx.Todos {
@@ -161,3 +164,68 @@ func GetData() error {
 	htmx.Todos = todos
 	return nil
 }
+
+// = = = = = =
+
+/*
+// Context represents the context of the current HTTP request.
+// It holds request and response objects, path, path parameters,
+// data, and registered handler.
+type Context interface {
+		Request() *http.Request
+		Response() *Response // "".Writer http.ResponseWriter
+		// Path returns the registered path for the handler.
+		Path() string
+		
+		// Param returns path parameter by name.
+		Param(name string) string
+ 		// ParamNames returns path parameter names.
+		ParamNames() []string
+		// ParamValues returns path parameter values.
+		ParamValues() []string
+		// QueryParam returns the query param for the provided name.
+		QueryParam(name string) string
+		// QueryParams returns the query parameters as `url.Values`.
+		QueryParams() url.Values
+		// QueryString returns the URL query string.
+		QueryString() string
+		// FormValue returns the form field value for the provided name.
+		FormValue(name string) string
+		// FormParams returns the form parameters as `url.Values`.
+		FormParams() (url.Values, error)
+		// FormFile returns the multipart form file for the provided name
+		FormFile(name string) (*multipart.FileHeader, error)
+		// MultipartForm returns the multipart form.
+		MultipartForm() (*multipart.Form, error)
+		// Cookie returns the named cookie provided in the request.
+		Cookie(name string) (*http.Cookie, error)
+		// Cookies returns the HTTP cookies sent with the request.
+		Cookies() []*http.Cookie
+		// Get retrieves data from the context.
+		Get(key string) interface{}
+		// Bind binds the request body into provided type `i`. 
+		// The default binder does it based on Content-Type header.
+		Bind(i interface{}) error
+		// Validate validates provided `i`.
+		// It is usually called after `Context#Bind()`.
+		// Validator must be registered using `Echo#Validator`.
+		Validate(i interface{}) error
+	}
+	context struct {
+		request  *http.Request
+		response *Response
+		path     string
+		pnames   []string
+		pvalues  []string
+		query    url.Values
+		handler  HandlerFunc
+		store    Map
+		echo     *Echo
+	}
+)
+*/
+
+func ctxAsString(p echo.Context) string {
+     return fmt.Sprintf("CTX<%#+v>", *(p.Request()))
+}
+
