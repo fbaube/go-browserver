@@ -13,6 +13,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+var TZ *time.Location
+
+func init() {
+     var e error
+     TZ, e  = time.LoadLocation("Local")
+     if  e != nil { panic(e) }
+}
+
 func renderTodosRoute(c echo.Context) error {
 	return c.HTML(http.StatusOK, htmx.RenderTodos(htmx.Todos))
 }
@@ -39,11 +47,13 @@ func addTodoRoute(c echo.Context) error {
 	}
 
 	// Get a single value
-	todo := htmx.Todo{ID: len(htmx.Todos) + 1, Title: todoTitle, Done: false, TimeID: time.Now().UnixMicro()}
+	// Jan 2 15:04:05 2006 MST
+	todo := htmx.Todo{ID: len(htmx.Todos) + 1, Title: todoTitle, 
+	     	Done: false, TimeID: time.Now().UnixNano() }
 	if todoTitle != "" {
 		htmx.Todos = append(htmx.Todos, todo)
 	}
-	fmt.Println("hello world I am here: writing response")
+	fmt.Println("hello world: from addTodoRoute: writing response")
 	err := c.HTML(http.StatusOK, htmx.RenderBody(htmx.Todos))
 
 	return err
@@ -58,13 +68,13 @@ func syncTodos(c echo.Context) error {
 	todos, _ = htmx.MergeChanges(todos, htmx.Todos)
 	htmx.Todos = todos
 	c.JSON(http.StatusOK, htmx.Todos)
-	fmt.Println("got new todos")
+	fmt.Println("syncTodos: got new todos")
 
 	return nil
 }
 
 func getTodos(c echo.Context) error {
-	fmt.Println("got new todos")
+	fmt.Println("getTodos: got new todos")
 	return c.JSON(http.StatusOK, htmx.Todos)
 }
 

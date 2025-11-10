@@ -22,6 +22,13 @@ type Todo struct {
 	TimeID int64  `json:"timestamp,omitempty"`
 }
 
+func (p *Todo) String() string {
+     var dunCbx = "[ ]"
+     if p.Done { dunCbx = "[X]" } 
+     return fmt.Sprintf("%02d %s \"%s\" %v", p.ID, dunCbx, p.Title,
+     	    time.UnixMicro(p.TimeID).Format("2006.01.02_15:04:05.00")) 
+}
+
 func getUUIDv7() uuid.UUID {
 	u, _ := uuid.NewV7()
 	return u
@@ -149,11 +156,11 @@ func Body(todos []Todo) *elem.Element {
 func MergeChanges(local, server []Todo) ([]Todo, error) {
 	merged := make(map[string]Todo)
 
-	for i, v := range local {
-		fmt.Printf("local[%d] = %+v\n", i, v)
-	}
 	for i, v := range server {
-		fmt.Printf("server[%d] = %+v\n", i, v)
+		fmt.Printf("old:todo@server[%d] = %s \n", i, v.String())
+	}
+	for i, v := range local {
+		fmt.Printf("new:todo@locall[%d] = %s \n", i, v.String())
 	}
 
 	// Add all local items to the merged map
@@ -176,7 +183,7 @@ func MergeChanges(local, server []Todo) ([]Todo, error) {
 	slices.SortFunc(result, sortTodos)
 	for i, v := range result {
 		result[i].ID = i
-		fmt.Printf("result[%d] = %+v\n", i, v)
+		fmt.Printf("now:todo@merged[%d] = %s \n", i, v.String())
 	}
 
 	return result, nil

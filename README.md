@@ -1,10 +1,12 @@
+### **_(Begin: README of fork)_**
+
 **General:**
-* This is a fork of [**lhtmx**](https://github.com/elijahmorg/lhtmx)
-*(no license)*
+* This repo is a fork of [**lhtmx**](https://github.com/elijahmorg/lhtmx)
+*(no LICENSE file provided)*
 * [**Article**](https://elijahm.com/posts/local_first_htmx_part2/)
-* [** HN discussion**](https://news.ycombinator.com/item?id=45853536) *(2025.11)*
+* [**HN discussion**](https://news.ycombinator.com/item?id=45853536) *(2025.11)*
 * [**Video**](https://www.youtube.com/watch?v=O2RB_8ircdE) about
-  [the underlying **plumbing**](https://github.com/nlepage/go-wasm-http-server)
+  the [**in-browser plumbing**](https://github.com/nlepage/go-wasm-http-server)
   `HTML<=>JS<=>Go` (from 2021, a bit outdated)
 * [**Slides**](https://nlepage.github.io/go-wasm-http-talk/) for the video
 
@@ -14,11 +16,13 @@
   of elem should be integrated
 * [**this article**](https://dev.to/chasefleming/building-a-go-static-site-generator-using-elem-go-3fhh) uses [**elem-ssg**](https://github.com/chasefleming/elem-ssg) to integrate the Goldmark markdown processor with elem 
 
+### **_(End: README of fork)_**
+
 # Build instructions
 
 ```
-cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" ./public/
-cd ./cmd/web/
+# (FIXME) # cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" ./public/
+cd ./cmd/wasm/
 GOOS=js GOARCH=wasm go build -o main.wasm . ; cp main.wasm ../../public
 cd ../server
 go run main.go &
@@ -37,7 +41,7 @@ cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js .
 ```
 
 
-# Todo List App with `elem-go`, `htmx`, `Go labstack/echo`
+# Todo List App <small>with `elem-go`, `htmx`, `Go labstack/echo`</small>
 
 Based off this [example](https://github.com/chasefleming/elem-go/tree/main/examples/htmx-fiber-todo) but with modifications. I grabbed this example as it looked like it did most of the todo stuff I wanted.
 
