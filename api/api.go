@@ -9,7 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/elijahmorg/lhtmx/htmx" // FIXME
+	// "github.com/elijahmorg/lhtmx/htmx" 
+	"github.com/fbaube/go-browserver/htmx"
 	"github.com/labstack/echo/v4"
 )
 
@@ -86,6 +87,17 @@ func ServerDelay(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+// =====================
+//  FUNCS for DATA SYNC 
+// =====================
+
+// SyncToServer syncs the current data state with the server in a Go routine.
+//
+// "This is a very rudimentary data sync method and it definitely has issues.
+// It is another idea I’d like to follow up with to see how to do this better
+// and more robustly. That is not the main point here, so I just got something
+// very basic working."
+// .
 func SyncToServer(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		SyncData()
@@ -125,6 +137,7 @@ func syncDataRoutine() {
 	htmx.Todos = todos
 }
 
+// GetData gets data from the server. 
 func GetData() error {
 
 	fmt.Println("get data from server for syncing")

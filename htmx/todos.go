@@ -26,7 +26,7 @@ func (p *Todo) String() string {
      var dunCbx = "[ ]"
      if p.Done { dunCbx = "[X]" } 
      return fmt.Sprintf("%02d %s \"%s\" %v", p.ID, dunCbx, p.Title,
-     	    time.UnixMicro(p.TimeID).Format("2006.01.02_15:04:05.00")) 
+     	    time.UnixMicro(p.TimeID).Format("2006.01.02_1504:05.00")) 
 }
 
 func getUUIDv7() uuid.UUID {

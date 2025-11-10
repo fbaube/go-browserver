@@ -9,20 +9,28 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// EchoStart (non-JS Edition) registers routes and 
+// handlers and then takes some shortcuts offered
+// by the Echo framework to start the server.
 func EchoStart() {
-	fmt.Println("server side code")
+	fmt.Println("Running server-side EchoStart...")
 	e := echo.New()
+	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(ServerDelay)
+	e.Use(ServerDelay) // non-JS-only, to emulate network latencies 
 
 	// Routes
-	e.GET("/", renderTodosRoute)
+	e.GET ("/", renderTodosRoute)
+	e.POST("/add",  addTodoRoute)
 	e.POST("/toggle/:id", toggleTodoRoute)
-	e.POST("/add", addTodoRoute)
-	e.GET("/sync", getTodos)
-	e.POST("/sync", syncTodos)
+	
+	// The next two routes are non-JS-only
+	e.GET ("/sync", getTodos)  
+	e.POST("/sync", syncTodos) 
 
-	e.Static("/", "../../public/")
-	e.Logger.Fatal(e.Start(":3000"))
+	fmt.Printf("Everything (server-side) is up and running...")
+	// These next two commands are non-JS-only
+	e.Static("/", "../../public/")   // non-JS-only
+	e.Logger.Fatal(e.Start(":3000")) // non-JS-only
 }

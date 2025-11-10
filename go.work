@@ -1,0 +1,10 @@
+go 1.25.4
+
+// This file should contain only directories that contain a go.mod,
+// and NOT their subdirectories that do not contain said file.
+
+use (
+	// Each entry here should have a go.mod & go.sum,
+	// which means don't include subdirs of a git repo.
+	.
+)

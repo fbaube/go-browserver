@@ -1,0 +1,40 @@
+go 1.24.3
+
+// This file should contain only directories that contain a go.mod,
+// and NOT their subdirectories that do not contain said file.
+
+use (
+	// Each entry here should have a go.mod & go.sum,
+	// which means don't include subdirs of a git repo.
+	.
+	./m5/cli/
+	// ./m5/huma
+	// ./m5/huma/sonic-PATCHED
+	./m5/m5/
+	./m5/rest/
+	./mcm/dtdx
+	./mcm/gparse
+	./mcm/gtoken
+	./mcm/gtree
+	./mcm/lwdx
+	./mcm/m5db
+	./mcm/mcfile
+	./utils/contentanalysis
+	./utils/ctoken
+	./utils/datarepo
+	./utils/dsmnd
+	./utils/fileutils
+	./utils/fsutils
+	./utils/humanbytes
+	./utils/logutils
+	./utils/miscutils
+	./utils/mlog
+	./utils/orderednodes
+	./utils/parseutils
+	// ./utils/sqlarfs
+	./utils/stringutils
+	// ./utils/walk
+	./utils/wasmutils
+	./utils/xmlutils
+	./utils/xmlxslt
+)
