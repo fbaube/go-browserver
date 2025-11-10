@@ -22,11 +22,11 @@ func init() {
      if  e != nil { panic(e) }
 }
 
-func renderTodosRoute(c echo.Context) error {
+func hRenderTodosRoute(c echo.Context) error {
 	return c.HTML(http.StatusOK, htmx.RenderTodos(htmx.Todos))
 }
 
-func toggleTodoRoute(c echo.Context) error {
+func hToggleTodoRoute(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var updatedTodo htmx.Todo
 	for i, todo := range htmx.Todos {
@@ -39,7 +39,7 @@ func toggleTodoRoute(c echo.Context) error {
 	return c.HTML(http.StatusOK, htmx.CreateTodoNode(updatedTodo).Render())
 }
 
-func addTodoRoute(c echo.Context) error {
+func hAddTodoRoute(c echo.Context) error {
 	fmt.Println("hello world I am here: addTodoRoute")
 	todoTitle := c.FormValue("newTodo")
 	fmt.Println("TodoTitle: ", todoTitle)
@@ -60,7 +60,7 @@ func addTodoRoute(c echo.Context) error {
 	return err
 }
 
-func syncTodos(c echo.Context) error {
+func hSyncTodos(c echo.Context) error {
 	var todos []htmx.Todo
 	err := c.Bind(&todos)
 	if err != nil {
@@ -74,7 +74,7 @@ func syncTodos(c echo.Context) error {
 	return nil
 }
 
-func getTodos(c echo.Context) error {
+func hGetTodos(c echo.Context) error {
 	fmt.Println("getTodos: got new todos")
 	return c.JSON(http.StatusOK, htmx.Todos)
 }

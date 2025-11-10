@@ -21,9 +21,9 @@ func EchoStart() {
 	e.Use(SyncToServer) // JS-only
 
 	// Routes
-	e.GET("/", renderTodosRoute)
-	e.POST("/add", addTodoRoute)
-	e.POST("/toggle/:id", toggleTodoRoute)
+	e.GET("/", hRenderTodosRoute)
+	e.POST("/add", hAddTodoRoute)
+	e.POST("/toggle/:id", hToggleTodoRoute)
 
 	// Start server (JS-only)
 	wasmhttp.Serve(e.Server.Handler) 

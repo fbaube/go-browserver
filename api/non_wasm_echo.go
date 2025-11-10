@@ -21,13 +21,13 @@ func EchoStart() {
 	e.Use(ServerDelay) // non-JS-only, to emulate network latencies 
 
 	// Routes
-	e.GET ("/", renderTodosRoute)
-	e.POST("/add",  addTodoRoute)
-	e.POST("/toggle/:id", toggleTodoRoute)
+	e.GET ("/", hRenderTodosRoute)
+	e.POST("/add",  hAddTodoRoute)
+	e.POST("/toggle/:id", hToggleTodoRoute)
 	
 	// The next two routes are non-JS-only
-	e.GET ("/sync", getTodos)  
-	e.POST("/sync", syncTodos) 
+	e.GET ("/sync",  hGetTodos)  
+	e.POST("/sync", hSyncTodos) 
 
 	fmt.Printf("Everything (server-side) is up and running...")
 	// These next two commands are non-JS-only
