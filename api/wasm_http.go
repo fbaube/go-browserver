@@ -14,6 +14,7 @@ import (
 // and then takes the echo.Server.Handler which is of 
 // type http.Handler and passes that into wasmhttp.Serve() 
 func EchoStart() {
+     	println("Running in-browser EchoStart...")
      	fmt.Printf("Running in-browser EchoStart...")
 	js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
        	e := echo.New()

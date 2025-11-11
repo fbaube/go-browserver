@@ -21,10 +21,12 @@ func init() {
      if  e != nil { panic(e) }
 }
 
+// hRenderTodosRoute is the handler for GET ("/")
 func hRenderTodosRoute(c echo.Context) error {
 	return c.HTML(http.StatusOK, htmx.RenderTodos(htmx.Todos))
 }
 
+// hToggleTodoRoute is the handler for POST("/toggle/:id")
 func hToggleTodoRoute(c echo.Context) error {
      // fmt.Printf("TOGGLE:" + ctxAsString(c))
         c.Echo().Logger.Info("TOGGLE:" + ctxAsString(c))
@@ -42,6 +44,7 @@ func hToggleTodoRoute(c echo.Context) error {
 	return c.HTML(http.StatusOK, htmx.CreateTodoNode(updatedTodo).Render())
 }
 
+// hAddTodoRoute is the handler for POST("/add")
 func hAddTodoRoute(c echo.Context) error {
 	fmt.Println("hello world I am here: addTodoRoute")
 	todoTitle := c.FormValue("newTodo")
@@ -63,6 +66,7 @@ func hAddTodoRoute(c echo.Context) error {
 	return err
 }
 
+// hSyncTodos is the handler for POST("/sync") (non-JS-only, i.e. server-side)
 func hSyncTodos(c echo.Context) error {
 	var todos []htmx.Todo
 	err := c.Bind(&todos)
@@ -77,6 +81,7 @@ func hSyncTodos(c echo.Context) error {
 	return nil
 }
 
+// hGetTodos is the handler for GET ("/sync") (non-JS-only, i.e. server-side) 
 func hGetTodos(c echo.Context) error {
 	fmt.Println("getTodos: got new todos")
 	return c.JSON(http.StatusOK, htmx.Todos)

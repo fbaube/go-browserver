@@ -31,6 +31,6 @@ func EchoStart() {
 
 	fmt.Printf("Everything (server-side) is up and running...")
 	// These next two commands are non-JS-only
-	e.Static("/", "../../public/")   // non-JS-only
+	e.Static("/", "../../public/")   // non-JS-only; JS gets from server!
 	e.Logger.Fatal(e.Start(":3000")) // non-JS-only
 }
