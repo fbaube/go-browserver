@@ -23,21 +23,23 @@ func init() {
 
 // hRenderTodosRoute is the handler for GET ("/")
 func hRenderTodosRoute(c echo.Context) error {
-	return c.HTML(http.StatusOK, htmx.RenderTodos(htmx.Todos))
+     	fmt.Println("Called hRenderTodosRoute: GET(\"/\")")
+	return c.HTML(http.StatusOK, htmx.RenderTodos(htmx.FakeServerSideTodosDB))
 }
 
 // hToggleTodoRoute is the handler for POST("/toggle/:id")
 func hToggleTodoRoute(c echo.Context) error {
+     	fmt.Println("Called hToggleTodoRoute: POST(\"/toggle/:id\")")
      // fmt.Printf("TOGGLE:" + ctxAsString(c))
         c.Echo().Logger.Info("TOGGLE:" + ctxAsString(c))
         println("TOGGLE:" + ctxAsString(c))
 	// js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
 	id, _ := strconv.Atoi(c.Param("id"))
 	var updatedTodo htmx.Todo
-	for i, todo := range htmx.Todos {
+	for i, todo := range htmx.FakeServerSideTodosDB {
 		if todo.ID == id {
-			htmx.Todos[i].Done = !todo.Done
-			updatedTodo = htmx.Todos[i]
+			htmx.FakeServerSideTodosDB[i].Done = !todo.Done
+			updatedTodo = htmx.FakeServerSideTodosDB[i]
 			break
 		}
 	}
@@ -46,45 +48,55 @@ func hToggleTodoRoute(c echo.Context) error {
 
 // hAddTodoRoute is the handler for POST("/add")
 func hAddTodoRoute(c echo.Context) error {
-	fmt.Println("hello world I am here: addTodoRoute")
+	fmt.Println("Called hAddTodoRoute: POST(\"/add\")")
 	todoTitle := c.FormValue("newTodo")
 	fmt.Println("TodoTitle: ", todoTitle)
 	if todoTitle == "" {
 		return c.String(http.StatusBadRequest, "no title provided")
 	}
-
-	// Get a single value
-	// Jan 2 15:04:05 2006 MST
-	todo := htmx.Todo{ID: len(htmx.Todos) + 1, Title: todoTitle, 
+	// Create a single value
+	todo := htmx.Todo{ID: len(htmx.FakeServerSideTodosDB) + 1, Title: todoTitle, 
 	     	Done: false, TimeID: time.Now().UnixNano() }
 	if todoTitle != "" {
-		htmx.Todos = append(htmx.Todos, todo)
+		htmx.FakeServerSideTodosDB = append(htmx.FakeServerSideTodosDB, todo)
 	}
 	fmt.Println("hello world: from addTodoRoute: writing response")
-	err := c.HTML(http.StatusOK, htmx.RenderBody(htmx.Todos))
+	err := c.HTML(http.StatusOK, htmx.RenderBody(htmx.FakeServerSideTodosDB))
 
 	return err
 }
 
-// hSyncTodos is the handler for POST("/sync") (non-JS-only, i.e. server-side)
+// hSyncTodos handles POST("/sync") on the server side. 
+// So, titles in our local client's DB override same-names
+// in htmx.FakeServerSideTodosDB, and then the result is
+// "pushed" back into the server-side DB. 
 func hSyncTodos(c echo.Context) error {
 	var todos []htmx.Todo
 	err := c.Bind(&todos)
 	if err != nil {
 		return err
 	}
-	todos, _ = htmx.MergeChanges(todos, htmx.Todos)
-	htmx.Todos = todos
-	c.JSON(http.StatusOK, htmx.Todos)
-	fmt.Println("syncTodos: got new todos")
+	// This call assumes that todos is newer, 
+	// and its contents override same-titles 
+	// in htmx.FakeServerSideTodosDB, our
+	// let's-pretend server-side datastore. 
+	todos, _ = htmx.MergeChanges(todos, htmx.FakeServerSideTodosDB) 
+	
+	// This is where we "write back to the server DB".
+	htmx.FakeServerSideTodosDB = todos
 
+	// Dump out the new state of the server-side DB.
+	c.JSON(http.StatusOK, htmx.FakeServerSideTodosDB)
+	fmt.Println("Called hSyncTodos: POST(\"/sync\")")
 	return nil
 }
 
-// hGetTodos is the handler for GET ("/sync") (non-JS-only, i.e. server-side) 
+// hGetTodos handles GET("/sync") on the server side.
+// So, it returns everything found in htmx.FakeServerSideTodosDB, 
+// our let's-pretend server-side datastore.
 func hGetTodos(c echo.Context) error {
-	fmt.Println("getTodos: got new todos")
-	return c.JSON(http.StatusOK, htmx.Todos)
+	fmt.Println("Called hGetTodos: GET(\"/sync\")")
+	return c.JSON(http.StatusOK, htmx.FakeServerSideTodosDB)
 }
 
 // ServerDelay middleware inserts artificial latency
@@ -119,36 +131,41 @@ func SyncData() {
 
 func syncDataRoutine() {
 	b := bytes.NewBuffer([]byte(""))
-	json.NewEncoder(b).Encode(htmx.Todos)
+	json.NewEncoder(b).Encode(htmx.FakeServerSideTodosDB)
 
-	resp, err := http.Post("http://localhost:3000/sync", "application/json", b)
+	// First we send our entire (presumedly updated) DB
+	// to the server. 
+	resp, err := http.Post("http://localhost:3000/sync",
+	      "application/json", b)
 	if err != nil {
 		fmt.Println("error syncing data: ", err)
 	}
-
 	if resp.StatusCode != http.StatusOK {
 		err = errors.New("bad status code for sync")
 		fmt.Println("error syncing data: ", err)
 		return
 	}
+	// Now we pretend to receive it at the server. 
 	todos := make([]htmx.Todo, 0)
 	err = json.NewDecoder(resp.Body).Decode(&todos)
 	if err != nil {
 		fmt.Println("error decoding response: ", err)
 	}
-
-	todos, err = htmx.MergeChanges(htmx.Todos, todos)
+	// Here we pretend to use the just-received (and updated)
+	// DB while merging in older stuff from todos. 
+	todos, err = htmx.MergeChanges(htmx.FakeServerSideTodosDB, todos) // local, server 
 	if err != nil {
 		fmt.Println("error merging: ", err)
 	}
-
-	htmx.Todos = todos
+	// Then we put the whole mess in our (fake) server-side DB.
+	htmx.FakeServerSideTodosDB = todos
 }
 
 // GetData gets data from the server. 
 func GetData() error {
 
 	fmt.Println("get data from server for syncing")
+	// This calls hGetTodos 
 	resp, err := http.Get("http://localhost:3000/sync")
 	if err != nil {
 		return err
@@ -158,15 +175,18 @@ func GetData() error {
 		fmt.Println(err)
 		return err
 	}
+	// todos is a temp var for fetching from the server.
 	todos := make([]htmx.Todo, 0)
 	json.NewDecoder(resp.Body).Decode(&todos)
 
-	todos, err = htmx.MergeChanges(htmx.Todos, todos)
+	// This is basickly a no-op, cos it assigns data
+	// fetched from our fake server DB back to same.
+	todos, err = htmx.MergeChanges(htmx.FakeServerSideTodosDB, todos) // local, server 
 	if err != nil {
 		return err
 	}
 
-	htmx.Todos = todos
+	htmx.FakeServerSideTodosDB = todos
 	return nil
 }
 
@@ -231,6 +251,6 @@ type Context interface {
 */
 
 func ctxAsString(p echo.Context) string {
-     return fmt.Sprintf("CTX<%#+v>", *(p.Request()))
+     return fmt.Sprintf("CTX<%+v>", *(p.Request()))
 }
 

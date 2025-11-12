@@ -4,7 +4,7 @@ package api
 
 import (
 	"fmt"
-
+//	"log"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -20,6 +20,11 @@ func EchoStart() {
 	e.Use(middleware.Recover())
 	e.Use(ServerDelay) // non-JS-only, to emulate network latencies 
 
+//	if l, ok := e.Logger.(*log.Logger); ok {
+//	   l.SetHeader("${time_rfc3339} ${level}")
+	l := e.Logger 
+	   fmt.Printf("logger: %T \n", l)
+//	}
 	// Routes
 	e.GET ("/", hRenderTodosRoute)
 	e.POST("/add",  hAddTodoRoute)

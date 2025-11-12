@@ -22,6 +22,10 @@ type Todo struct {
 	TimeID int64  `json:"timestamp,omitempty"`
 }
 
+// Global slice of Todos (for simplicity) that pretend to be
+// a server-side DB that we fetch from and stay in sync with. 
+var FakeServerSideTodosDB = []Todo{}
+
 func (p *Todo) String() string {
      var dunCbx = "[ ]"
      if p.Done { dunCbx = "[X]" } 
@@ -33,9 +37,6 @@ func getUUIDv7() uuid.UUID {
 	u, _ := uuid.NewV7()
 	return u
 }
-
-// Global Todos slice (for simplicity)
-var Todos = []Todo{}
 
 func CreateTodoNode(todo Todo) elem.Node {
 	checkbox := elem.Input(attrs.Props{
@@ -99,7 +100,7 @@ func RenderTodos(todos []Todo) string {
 			{ID: 1, Title: "First  task", Done: false, TimeID: time.Now().UnixMicro() + 1},
 			{ID: 2, Title: "Second task", Done: true, TimeID: time.Now().UnixMicro() + 2},
 		}
-		Todos = todos
+		GlobalTodos = todos
 	}
 	headContent := elem.Head(nil,
 		elem.Script(attrs.Props{attrs.Src: "https://unpkg.com/htmx.org"}),
@@ -153,39 +154,45 @@ func Body(todos []Todo) *elem.Element {
 	return bodyContent
 }
 
+// MergeChanges favors local: if titles clash,
+// local wins and server is discarded. Thus this
+// func assumes that local is newer than server.
+// Thus local (newer) is merged into server (older).
 func MergeChanges(local, server []Todo) ([]Todo, error) {
+
+     	// merged collects the output of this func. 
 	merged := make(map[string]Todo)
 
+	// Dump out what we have at hand.
 	for i, v := range server {
 		fmt.Printf("old:todo@server[%d] = %s \n", i, v.String())
 	}
 	for i, v := range local {
 		fmt.Printf("new:todo@locall[%d] = %s \n", i, v.String())
 	}
-
-	// Add all local items to the merged map
+	// To fill the merged map, start by copying in all the local items. 
 	for _, item := range local {
 		merged[item.Title] = item
 	}
-
-	// Merge server items, using the most recent version
+	// Then merge in server items, using the most recent version.
+	// If a local has the same title, do not overwrite it with the server's. 
 	for _, serverItem := range server {
 		if _, exists := merged[serverItem.Title]; !exists {
 			merged[serverItem.Title] = serverItem
 		}
 	}
-
-	// Convert map back to slice
+	// Convert the map back to a slice. 
 	result := make([]Todo, 0, len(merged))
 	for _, item := range merged {
 		result = append(result, item)
 	}
+	// and sort it. 
 	slices.SortFunc(result, sortTodos)
+	// and dump it out.
 	for i, v := range result {
 		result[i].ID = i
 		fmt.Printf("now:todo@merged[%d] = %s \n", i, v.String())
 	}
-
 	return result, nil
 }
 

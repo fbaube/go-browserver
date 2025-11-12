@@ -4,6 +4,7 @@ package api
 
 import (
         "fmt"
+//	"log"
 	"syscall/js"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -22,7 +23,10 @@ func EchoStart() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(SyncToServer) // JS-only
-
+/*
+	if l, ok := e.Logger.(*log.Logger); ok {
+	   l.SetHeader("${time_rfc3339} ${level}")
+	} */
 	// Routes
 	e.GET("/", hRenderTodosRoute)
 	e.POST("/add", hAddTodoRoute)
