@@ -28,9 +28,11 @@ function registerWasmHTTPListener(wasm, { base, args = [] } = {}) {
 
   const go = new Go();
   go.argv = [wasm, ...args];
+  console.log("instantiateStreaming...")
   WebAssembly.instantiateStreaming(fetch(wasm), go.importObject).then((
     { instance },
   ) => go.run(instance));
+  console.log("...succeeded?")
 
   addEventListener("fetch", (e) => {
     const url = new URL(e.request.url);

@@ -19,13 +19,13 @@ license that can be found in the LICENSE file.
 	-->
 	<script src="../../lib/wasm/wasm_exec.js"></script>
 	<script>
+		console.log("instantiateStreaming...")
 		if (!WebAssembly.instantiateStreaming) { // polyfill
 			WebAssembly.instantiateStreaming = async (resp, importObject) => {
 				const source = await (await resp).arrayBuffer();
 				return await WebAssembly.instantiate(source, importObject);
 			};
 		}
-
 		const go = new Go();
 		let mod, inst;
 		WebAssembly.instantiateStreaming(fetch("test.wasm"), go.importObject).then((result) => {
@@ -35,7 +35,8 @@ license that can be found in the LICENSE file.
 		}).catch((err) => {
 			console.error(err);
 		});
-
+		console.log("... success?")
+		
 		async function run() {
 			console.clear();
 			await go.run(inst);
