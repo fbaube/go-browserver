@@ -9,23 +9,34 @@ package main
 // the server would have some additional code and be authori-
 // tative, but I’m bypassing that for the purpose of this POC.
 //
-// If for some reason the service worker is not installed when a fetch
-// request is made, that request will go to the server, be handled by the
-// server and rendered HTML will be returned just as if it was a SSR app.
+// If for some reason the service worker is not installed when 
+// a fetch request is made, that request will go to the server, 
+// be handled by the server and rendered HTML will be returned
+// just as if it was a SSR app.
 
 import (
 	"fmt"
-	// "github.com/elijahmorg/lhmtx/api" 
+	"syscall/js"
 	"github.com/fbaube/go-browserver/api"
+//	WU "github.com/fbaube/wasmutils"
 )
 
 func main() {
-     	fmt.Println("Executing...")
+        js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
+     	fmt.Println("Executing server...")
 	err := api.GetData()
 	if err != nil {
 		fmt.Println("error syncing data with server")
 	}
-	fmt.Println("Running...")
+	fmt.Println("Running server...")
 	go api.GetData()
-	api.EchoStart() // This should start the func's JS version 
+	api.EchoStart() // This should start the func's JS version
+/*
+	// Now some JS+Dom stuff. // but DOES NOTHING
+//	p := WU.Doc.Call("createElement", "h1")
+	p := js.Global().Get("document").Call("createElement", "h1")
+	p.Set("innerHTML", "Hello from Golang!")
+	// WU.DocBody.Call("appendChild", p)
+	js.Global().Get("body").Call("appendChild", p)
+*/
 }
