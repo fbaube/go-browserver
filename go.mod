@@ -6,6 +6,7 @@ go 1.25.4
 
 require (
 	github.com/chasefleming/elem-go v0.31.0
+	github.com/fbaube/wasmutils v0.0.0-20250302100751-c3d5b233f416
 	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/nlepage/go-wasm-http-server v1.1.0

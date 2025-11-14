@@ -100,29 +100,58 @@ func RenderTodos(todos []Todo) string {
 			{ID: 1, Title: "First  task", Done: false, TimeID: time.Now().UnixMicro() + 1},
 			{ID: 2, Title: "Second task", Done: true, TimeID: time.Now().UnixMicro() + 2},
 		}
-		GlobalTodos = todos
+		FakeServerSideTodosDB = todos
 	}
 	headContent := elem.Head(nil,
 		elem.Script(attrs.Props{attrs.Src: "https://unpkg.com/htmx.org"}),
 		elem.Script(attrs.Props{attrs.Src: "wasm_exec.js"}),
 		elem.Script(attrs.Props{attrs.Src: "start_worker.js"}),
 	)
-	bodyContent := Body(todos)
+	bodyContent := Body(todos) 
 
 	htmlContent := elem.Html(nil, headContent, bodyContent)
 
-	return htmlContent.Render()
+	return htmlContent.Render() 
 }
 
 func RenderBody(todos []Todo) string {
 	htmlContent := elem.Body(nil, Body(todos))
-	return htmlContent.Render()
+	return htmlContent.Render() 
 }
 
+// Body returns this:
+/*
+div style="background-color: #f9f9f9; border: 1px solid #ccc; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); margin: 40px auto; max-width: 300px; padding: 20px;">
+    <h2>Browserved Todo App</h2>
+    <form hx-post="/add" hx-swap="innerHTML" hx-target="body">
+        <input name="newTodo" placeholder="Add new task..." style="background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px; padding: 10px; width: 100%;" type="text">
+        <button style="background-color: #007BFF; border-radius: 4px; border-style: none; color: white; cursor: pointer; font-size: 14px; height: 36px; margin-right: 10px; padding: 8px 12px; width: 100%;" type="submit">Add</button>
+    </form>
+        <ul style="list-style-type: none; padding: 0; width: 100%;">
+        <li id="todo-0">
+            <input hx-post="/toggle/0" hx-target="#todo-0" type="checkbox">
+            <span style="text-decoration: none;">Zeroth task</span>
+        </li>
+        <li id="todo-1">
+            <input hx-post="/toggle/1" hx-target="#todo-1" type="checkbox">
+            <span style="text-decoration: none;">First  task</span>
+        </li>
+        <li id="todo-2">
+            <input hx-post="/toggle/2" hx-target="#todo-2" type="checkbox">
+            <span style="text-decoration: none;">Second task</span>
+        </li>
+	<li id="todo-3">
+            <input checked hx-post="/toggle/3" hx-target="#todo-3" type="checkbox">
+            <span style="text-decoration: line-through;">derf</span>
+        </li>
+    </ul>
+</div>
+*/
 func Body(todos []Todo) *elem.Element {
 	bodyContent := elem.Div(
 		attrs.Props{attrs.Style: centerContainerStyle.ToInline()},
 		elem.H2(nil, elem.Text("Browserved Todo App")),
+		elem.H3(nil, elem.Text("Heck yeah")),
 		elem.Form(
 			// attrs.Props{attrs.Method: "post", attrs.Action: "/add"},
 			attrs.Props{
