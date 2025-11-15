@@ -22,14 +22,22 @@ import (
 )
 
 func main() {
+     	jsG := js.Global()
+	if !jsG.Truthy() {
+	   fmt.Println("error getting DOM via JS")
+	} else {
+	   fmt.Println("wasm/main got DOM via JS, YEAY!")
+	}
         js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
      	fmt.Println("Executing server...")
-	err := api.GetData()
+	// Not sure why we have two calls. Is it so we can do a
+	// quick error check before launching a separate thread ? 
+	err := api.GetDataFromServer()
 	if err != nil {
 		fmt.Println("error syncing data with server")
 	}
 	fmt.Println("Running server...")
-	go api.GetData()
+	go api.GetDataFromServer()
 	api.EchoStart() // This should start the func's JS version
 /*
 	// Now some JS+Dom stuff. // but DOES NOTHING

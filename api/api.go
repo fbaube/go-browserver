@@ -11,6 +11,7 @@ import (
 	// "github.com/elijahmorg/lhtmx/htmx" 
 	"github.com/fbaube/go-browserver/htmx"
 	"github.com/labstack/echo/v4"
+	"syscall/js"
 )
 
 var TZ *time.Location
@@ -48,6 +49,14 @@ func hToggleTodoRoute(c echo.Context) error {
 
 // hAddTodoRoute is the handler for POST("/add")
 func hAddTodoRoute(c echo.Context) error {
+        jsG := js.Global()
+        if !jsG.Truthy() {
+           fmt.Println("error getting DOM via JS")
+        } else {
+           fmt.Println("hAddTodoRoutegot DOM via JS, YEAY!")
+        }
+        js.Global().Get("console").Call("log", "Hello from Go WebAssembly!")
+
 	fmt.Println("Called hAddTodoRoute: POST(\"/add\")")
 	todoTitle := c.FormValue("newTodo")
 	fmt.Println("TodoTitle: ", todoTitle)
@@ -161,8 +170,8 @@ func syncDataRoutine() {
 	htmx.FakeServerSideTodosDB = todos
 }
 
-// GetData gets data from the server. 
-func GetData() error {
+// GetDataFromServer gets data from the server. 
+func GetDataFromServer() error {
 
 	fmt.Println("get data from server for syncing")
 	// This calls hGetTodos 

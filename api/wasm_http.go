@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	wasmhttp "github.com/nlepage/go-wasm-http-server"
-	WU "github.com/fbaube/wasmutils"
+//	WU "github.com/fbaube/wasmutils"
 )
 
 // EchoStart (JS Edition) registers routes and handlers 
